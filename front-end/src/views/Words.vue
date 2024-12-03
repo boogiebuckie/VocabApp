@@ -13,20 +13,22 @@
                 <td>{{word.english}}</td>
                 <td>{{word.german}}</td>
                 <td width = "75" class="center aligned">
-                    <router-link :to="{name: 'show',params:{id: word._id}}">Show</router-link>
+                    <router-link :to="{name: 'show',params:{wordId: words._id}}">Show</router-link>
                 </td>
                 <td width = "75" class="center aligned">
                     <router-link :to="{name: 'edit',params:{id: word._id}}">Edit</router-link>
                 </td>
-                <td width = "75" class="center aligned">Delete</td>
+                <td width = "75" class="center aligned" @click.prevent = "onDestroy(word._id)">
+                    <a :href ="`/words/${words._id}`">Destroy</a>
+                </td>
             </tr>
         </table>
     </div>
 </template>
 
 <script>
-    import router from '@/router';
-import{api} from'../helpers/helpers';
+    //import router from '@/router';
+    import{api} from'../helpers/helpers';
     export default{
         name:'words',
         data(){
@@ -34,8 +36,20 @@ import{api} from'../helpers/helpers';
                 words:[]
             };
         },
+
+        methods:{
+            async onDestroy(id){
+                const sure = window.confirm('Are you sure ?');
+                if(!sure) return;
+                await api.deleteWord(id);
+                this.flash('Word delete sucessfully!', 'success');
+                const newWords = this.words.filter(word => word._id !== id);
+                this.words = newWords;
+            }
+        },
+
         async mounted(){
             this.words = await api.getWords();
-        }
+        },    
     };
 </script> 

@@ -14,3 +14,4 @@ const VocabSchema = new Schema({
 );
 
 module.exports = mongoose.model('Vocab', VocabSchema);
+

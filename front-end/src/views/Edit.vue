@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Edit Word</h1>
-        <word-form @createOrUpdate="createOrUpdate" :word="word"></word-form>
+        <word-form @createOrUpdate="createOrUpdate" :word="this.word"></word-form>
     </div>
 </template>
 
@@ -20,19 +20,15 @@
                 word: {}
             };
         },
+        async mounted(){
+        this.word = await api.getWord(this.$route.params.id);
+        },
 
         methods: {
-            async createOrUpdate(word) {
-                try {
-                    await api.updateWord(word);
-                    this.flash('Word update succesfully!','success');
-                    this.$router.push(`/words/${word._id}`);
-                    //alert('Word updated successfully!');
-                    //this.$router.push(`/words/${word._id}`);
-                } catch (error) {
-                    console.error("Error updating word:", error);
-                    alert('Failed to update word. Please try again.');
-                }
+            createOrUpdate: async function (word) {
+                await api.updateWord(word)
+                this.flash('Word updated', 'Success')
+                this.$router.push(`/words/${word._id}`)
             }
         }
     };
