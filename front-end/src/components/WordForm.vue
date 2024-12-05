@@ -6,16 +6,29 @@
        <div class="ui label">
          <i class="germany flag"></i> German
        </div>
-       <input type="text" placeholder="Enter word..." v-model="word.german" />
+       <input type="text" placeholder="Enter word..." v-model="word.german" required/>
      </div>
  
      <div class="ui labeled input fluid">
        <div class="ui label">
-         <i class="united kingdom flag"></i> English
+         <i class="united kingdom flag "></i> English
        </div>
-       <input type="text" placeholder="Enter word..." v-model="word.english" />
+       <input type="text" placeholder="Enter word..." v-model="word.english" required/>
      </div>
- 
+    
+     <div class="ui labeled input fluid">
+        <div class="ui label">
+          <i class="vietnam flag"></i> Vietnamese
+        </div>
+      <input 
+        type="text" 
+        placeholder="Enter word..." 
+        v-model="word.vietnam" 
+        aria-label="Vietnamese word input" 
+        required
+      />
+    </div>
+
      <button class="positive ui button">Submit</button>
    </form>
  </template>
@@ -30,7 +43,8 @@
         default:() =>{
           return {
             english: '',
-            german:''
+            german:'',
+            vietnam:'',
           };
         }
       }
@@ -42,10 +56,12 @@
     },
     methods: {
       onSubmit() {
-        if (this.word.english === '' || this.word.german === '') {
-          this.errorsPresent = true;
+      // Check if any of the fields are empty
+        if (!this.word.english.trim() || !this.word.german.trim() || !this.word.vietnam.trim()) {
+          this.errorsPresent = true; // Show error if any field is empty
         } else {
-          this.errorsPresent = false;
+          this.errorsPresent = false; // No error if all fields are filled
+          // Emit the createOrUpdate event with the word object
           this.$emit('createOrUpdate', this.word);
         }
       }

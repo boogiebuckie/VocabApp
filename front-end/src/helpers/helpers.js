@@ -1,4 +1,3 @@
-// main.js
 import axios from 'axios';
 import Vue from 'vue';  
 import VueFlashMessage from 'vue-flash-message';
@@ -11,16 +10,18 @@ Vue.use(VueFlashMessage, {
     }
 });
 
+// Create a Vue instance to access globally for flash messages
 const vm = new Vue();
-const baseURL = 'http://localhost:3000/words/'; // name of the backend connection
+const baseURL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000/words/';
 
-const handleError = (fn) => (...params) =>
-    fn(...params).catch((error) => {
-        vm.flash(`${error.response.status}: ${error.response.statusText}`, 'error');
-        // Uncomment the next line for more error context if needed
-        // console.error("API call failed:", error);
-        // throw error; // Re-throw error if further handling is needed
-    });
+const handleError = (fn) => async (...params) => {
+    try {
+        return await fn(...params);
+    } catch (error) {
+        vm.flash(`Error: ${error.response?.statusText || 'Unknown error'}`, 'error');
+        console.error('API error:', error); // For debugging
+    }
+};
 
 export const api = {
     getWord: handleError(async (id) => {
@@ -48,4 +49,3 @@ export const api = {
         return res.data;
     })
 };
-
